@@ -1,0 +1,20 @@
+[
+  {
+    "name": "Café Espresso",
+    "description": "Café intenso y aromático, ideal para los amantes del espresso.",
+    "price": 50,
+    "image": "https://images.unsplash.com/photo-espresso.jpg"
+  },
+  {
+    "name": "Café Americano",
+    "description": "Café suave y ligero, perfecto para cualquier momento del día.",
+    "price": 40,
+    "image": "https://images.unsplash.com/photo-americano.jpg"
+  },
+  {
+    "name": "Café Latte",
+    "description": "Café con leche cremoso y espumoso, una delicia para el desayuno.",
+    "price": 55,
+    "image": "https://images.unsplash.com/photo-latte.jpg"
+  }
+]
