@@ -3,7 +3,7 @@ import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
-import { verifyToken, isAdmin } from '../middleware/auth.js';
+import auth from '../middleware/auth.js';
 
 const router = express.Router();
 const __filename = fileURLToPath(import.meta.url);
@@ -45,8 +45,8 @@ const upload = multer({
   fileFilter: fileFilter
 });
 
-// Endpoint para subir imágenes (requiere autenticación y rol de admin)
-router.post('/', verifyToken, isAdmin, upload.single('image'), (req, res) => {
+// Endpoint para subir imágenes (requiere autenticación)
+router.post('/', auth, upload.single('image'), (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ message: 'No se ha subido ninguna imagen' });
@@ -83,8 +83,8 @@ router.get('/:filename', (req, res) => {
   }
 });
 
-// Endpoint para eliminar imágenes (requiere autenticación y rol de admin)
-router.delete('/:filename', verifyToken, isAdmin, (req, res) => {
+// Endpoint para eliminar imágenes (requiere autenticación)
+router.delete('/:filename', auth, (req, res) => {
   try {
     const filename = req.params.filename;
     const filePath = path.join(uploadsDir, filename);
