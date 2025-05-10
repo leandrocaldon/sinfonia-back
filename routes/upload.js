@@ -10,8 +10,12 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Configurar carpeta de uploads si no existe
-const uploadsDir = path.join(__dirname, '../uploads');
-if (!fs.existsSync(uploadsDir)) {
+// En Vercel, usar /tmp para almacenamiento temporal
+const isVercel = process.env.VERCEL === '1';
+const uploadsDir = isVercel ? '/tmp' : path.join(__dirname, '../uploads');
+
+// Solo crear el directorio si no estamos en Vercel
+if (!isVercel && !fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });
 }
 
@@ -52,12 +56,18 @@ router.post('/', auth, upload.single('image'), (req, res) => {
       return res.status(400).json({ message: 'No se ha subido ninguna imagen' });
     }
     
-    // Construir URL para la imagen
+    // En Vercel, no podemos guardar archivos permanentemente
+    // Mejor usar Cloudinary directamente desde el frontend
+    // Esta URL es temporal y solo funcionará en desarrollo local
     const baseUrl = process.env.NODE_ENV === 'production' 
-      ? process.env.API_URL || 'https://api.sinfoniacoffee.com'
+      ? process.env.API_URL || 'https://sinfonia-back.vercel.app'
       : 'http://localhost:5000';
     
+    // Construir URL para la imagen
     const imageUrl = `${baseUrl}/api/uploads/${req.file.filename}`;
+    
+    // Nota: En producción con Vercel, esta URL no será permanente
+    // ya que los archivos en /tmp se eliminan periódicamente
     
     res.status(200).json({ 
       message: 'Imagen subida correctamente',

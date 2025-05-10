@@ -19,8 +19,12 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Servir archivos estáticos desde la carpeta uploads
-app.use('/api/uploads', express.static(path.join(__dirname, 'uploads')));
+// Detectar si estamos en Vercel
+const isVercel = process.env.VERCEL === '1';
+
+// Servir archivos estáticos desde la carpeta uploads o /tmp en Vercel
+const uploadsDir = isVercel ? '/tmp' : path.join(__dirname, 'uploads');
+app.use('/api/uploads', express.static(uploadsDir));
 
 // Rutas
 app.use('/api/auth', authRoutes);
