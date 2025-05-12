@@ -16,7 +16,31 @@ const __dirname = path.dirname(__filename);
 dotenv.config();
 
 const app = express();
-app.use(cors());
+
+// Configuración de CORS optimizada para Netlify
+app.use(cors({
+  // Permitir cualquier origen de Netlify (*.netlify.app)
+  origin: function(origin, callback) {
+    // Permitir solicitudes sin origen (como las de herramientas de desarrollo)
+    if (!origin) return callback(null, true);
+    
+    // Permitir dominios de Netlify y localhost
+    if (
+      origin.endsWith('netlify.app') || 
+      origin.includes('sinfonia-coffee.windsurf.build') ||
+      origin === 'http://localhost:3000'
+    ) {
+      return callback(null, true);
+    }
+    
+    callback(new Error('No permitido por CORS'));
+  },
+  // No es necesario enviar credenciales para esta aplicación
+  credentials: false,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'Cache-Control']
+}));
+
 app.use(express.json());
 
 // Detectar si estamos en Vercel
